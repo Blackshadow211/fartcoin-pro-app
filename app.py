@@ -1,59 +1,61 @@
 
 import streamlit as st
 import time
-import requests
-import pandas as pd
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-# Config
-LEVERAGE = 20
-EMAIL_ADDRESS = "remixbooster2@gmail.com"
-APP_PASSWORD = "xjlrszqzjtmvprfo"
-RECIPIENT_EMAIL = "remixbooster2@example.com"
-
-st.set_page_config(page_title="Fartcoin Pro Trade Assistant", layout="centered")
-
-st.title("🧠 Fartcoin Pro Trade Assistant")
-
-st.sidebar.header("Trade Input")
-entry = st.sidebar.number_input("Entry Price ($)", value=0.8500, format="%.6f")
-exit_price = st.sidebar.number_input("Exit Price ($)", value=0.8700, format="%.6f")
-tp = st.sidebar.number_input("Take Profit ($)", value=0.8900, format="%.6f")
-balance = st.sidebar.number_input("Account Balance ($)", value=50.0)
-
-# Calculations
-position_size = balance * LEVERAGE
-pnl = (exit_price - entry) * LEVERAGE / entry * 100
-profit_loss = "Profit" if pnl > 0 else "Loss"
-
-st.markdown(f"### 📊 PnL Analysis")
-st.markdown(f"- Leverage: **{LEVERAGE}x**")
-st.markdown(f"- Position Size: **${position_size:.2f}**")
-st.markdown(f"- Expected Result: **{profit_loss}**")
-st.markdown(f"- Projected PnL: **{pnl:.2f}%**")
-
-# Function to send email alert
+# Email alert function
 def send_email(subject, body):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_ADDRESS
-    msg['To'] = RECIPIENT_EMAIL
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+    EMAIL_ADDRESS = "yourbot@gmail.com"  # Replace with your bot email
+    APP_PASSWORD = "yourapppassword"     # Replace with your app password
+    RECIPIENT_EMAIL = "youremail@example.com"  # Replace with your email
+
+    msg = MIMEMultipart()
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = RECIPIENT_EMAIL
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "plain"))
+    try:
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         server.login(EMAIL_ADDRESS, APP_PASSWORD)
-        server.send_message(msg)
+        server.sendmail(EMAIL_ADDRESS, RECIPIENT_EMAIL, msg.as_string())
+        server.quit()
+    except Exception as e:
+        st.error(f"Failed to send email: {e}")
 
-# Placeholder chart (MEXC data requires frontend iframe or custom integration)
+# App UI
+st.set_page_config(page_title="Fartcoin Pro App", layout="centered")
+st.title("🚀 Fartcoin Trading Pro App")
+
+entry = st.number_input("Entry Price", step=0.0001, format="%.4f")
+exit_price = st.number_input("Exit Price", step=0.0001, format="%.4f")
+tp = st.number_input("Take Profit Price (optional)", step=0.0001, format="%.4f")
+balance = st.number_input("Account Balance (USDT)", step=1.0)
+leverage = 20
+
+investment = balance * 0.1 * leverage if balance else 0
+position_size = investment / entry if entry else 0
+pnl = (exit_price - entry) * position_size if exit_price else 0
+pnl_percent = (pnl / investment) * 100 if investment else 0
+
+if entry and exit_price:
+    st.metric("Projected PnL", f"{pnl:.2f} USDT", f"{pnl_percent:.2f}%")
+
+# Display TradingView chart
 st.markdown("### 📈 Live Fartcoin Chart (TradingView)")
-st.components.v1.html("""
-    <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=MEXC:FARTCOINUSDT" 
-            width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-""", height=500)
+tradingview_widget = f'''
+<iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_{int(time.time())}&symbol=MEXC:FARTCOINUSDT&interval=1&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=dark&style=1&timezone=Etc/UTC&withdateranges=1&hideideas=1" width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+'''
+st.components.v1.html(tradingview_widget, height=500)
 
+# Signal Logic Placeholder (Use actual signal logic in production)
+import random
+signal = random.choice(["BUY", "SELL", "HOLD"])
+if signal != "HOLD":
+    send_email(f"New Fartcoin Trade Signal: {signal}", f"Recommended Action: {signal}")
 
-# Auto-refresh
-st_autorefresh = st.empty()
-count = st_autorefresh.empty()
-count.text("⏳ Auto-refreshing every 30 seconds...")
+# Auto-refresh every 30 seconds
+st.markdown("⏳ Auto-refreshing every 30 seconds...")
 time.sleep(30)
 st.experimental_rerun()
