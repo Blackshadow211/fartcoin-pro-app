@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 def send_email(subject, body):
     EMAIL_ADDRESS = "remixbooster2@gmail.com"  # Replace with your bot email
     APP_PASSWORD = "xjlrszqzjtmvprfo"     # Replace with your app password
-    RECIPIENT_EMAIL = "remixbooster2@example.com"  # Replace with your email
+    RECIPIENT_EMAIL = "remixbooster2@gmail.com"  # Replace with your email
 
     msg = MIMEMultipart()
     msg["From"] = EMAIL_ADDRESS
