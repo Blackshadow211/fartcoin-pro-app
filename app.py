@@ -57,5 +57,5 @@ if signal != "HOLD":
 
 # Auto-refresh every 30 seconds
 st.markdown("⏳ Auto-refreshing every 30 seconds...")
-time.sleep(30)
+time.sleep(5)
 st.experimental_rerun()
