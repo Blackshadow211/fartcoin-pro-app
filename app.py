@@ -9,9 +9,9 @@ from email.mime.text import MIMEText
 
 # Config
 LEVERAGE = 20
-EMAIL_ADDRESS = "yourbot@gmail.com"
-APP_PASSWORD = "yourapppassword"
-RECIPIENT_EMAIL = "youremail@example.com"
+EMAIL_ADDRESS = "remixbooster2@gmail.com"
+APP_PASSWORD = "xjlrszqzjtmvprfo"
+RECIPIENT_EMAIL = "remixbooster2@example.com"
 
 st.set_page_config(page_title="Fartcoin Pro Trade Assistant", layout="centered")
 
