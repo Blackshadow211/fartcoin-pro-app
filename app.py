@@ -44,8 +44,12 @@ def send_email(subject, body):
         server.send_message(msg)
 
 # Placeholder chart (MEXC data requires frontend iframe or custom integration)
-st.markdown("### 📈 Live Fartcoin Chart (MEXC)")
-st.components.v1.iframe("https://www.mexc.com/exchange/FART_USDT", height=500)
+st.markdown("### 📈 Live Fartcoin Chart (TradingView)")
+st.components.v1.html("""
+    <iframe src="https://www.tradingview.com/embed-widget/symbol-overview/?symbol=MEXC:FARTCOINUSDT" 
+            width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+""", height=500)
+
 
 # Auto-refresh
 st_autorefresh = st.empty()
