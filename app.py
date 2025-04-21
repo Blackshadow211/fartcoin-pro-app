@@ -29,10 +29,6 @@ def send_email(subject, body):
 
 # Fetch historical prices from MEXC
 df = fetch_price_data()
-if df.empty:
-    st.error("Failed to fetch price data. Please try again later.")
-    st.stop()
-
     url = "https://api.mexc.com/api/v3/klines?symbol=FARTCOINUSDT&interval=1m&limit=100"
     response = requests.get(url)
     if response.status_code == 200:
