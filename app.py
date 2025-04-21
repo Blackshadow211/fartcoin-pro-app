@@ -28,17 +28,29 @@ def send_email(subject, body):
         st.error(f"Failed to send email: {e}")
 
 # Fetch historical prices from MEXC
-def fetch_price_data():
-    url = "https://api.mexc.com/api/v3/klines?symbol=FARTCOINUSDT&interval=1m&limit=50"
+df = fetch_price_data()
+if df.empty:
+    st.error("Failed to fetch price data. Please try again later.")
+    st.stop()
+
+    url = "https://api.mexc.com/api/v3/klines?symbol=FARTCOINUSDT&interval=1m&limit=100"
     response = requests.get(url)
-    data = response.json()
-    df = pd.DataFrame(data, columns=[
-        "timestamp", "open", "high", "low", "close", "volume",
-        "close_time", "quote_asset_volume", "number_of_trades",
-        "taker_buy_base_volume", "taker_buy_quote_volume", "ignore"
-    ])
-    df["close"] = df["close"].astype(float)
-    return df
+    if response.status_code == 200:
+        raw_data = response.json()
+        if not raw_data:
+            return pd.DataFrame()  # Return empty if no data
+
+        df = pd.DataFrame(raw_data, columns=[
+            "timestamp", "open", "high", "low", "close", "volume", 
+            "_", "_", "_", "_", "_", "_"
+        ])
+        df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
+        df.set_index("timestamp", inplace=True)
+        df["close"] = pd.to_numeric(df["close"])
+        return df
+    else:
+        return pd.DataFrame()  # Return empty if request fails
+
 
 def calculate_ema_signals(df):
     df["EMA6"] = df["close"].ewm(span=6, adjust=False).mean()
