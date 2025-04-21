@@ -10,9 +10,9 @@ from email.mime.multipart import MIMEMultipart
 
 # Email alert function
 def send_email(subject, body):
-    EMAIL_ADDRESS = "yourbot@gmail.com"  # Replace with your bot email
-    APP_PASSWORD = "yourapppassword"     # Replace with your app password
-    RECIPIENT_EMAIL = "youremail@example.com"  # Replace with your email
+    EMAIL_ADDRESS = "remixbooster2@gmail.com"  # Replace with your bot email
+    APP_PASSWORD = "xjlrszqzjtmvprfo"     # Replace with your app password
+    RECIPIENT_EMAIL = "remixbooster2@gmail.com"  # Replace with your email
 
     msg = MIMEMultipart()
     msg["From"] = EMAIL_ADDRESS
